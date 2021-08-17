@@ -21,7 +21,7 @@ const token = 'tu-token';
 ### Comandos disponibles
 
 * Tirada clásica: /XdY (por ejemplo: /1d20, /2d6, /2d10, etc).
-* /ryf: Tirada para el sistema Rápido y Fácil (tira 2 dados de 10 caras y coge el dado medio). Este comando tiene variaciones:
+* /ryf: Tirada para el sistema Rápido y Fácil (tira 3 dados de 10 caras y coge el dado medio). Este comando tiene variaciones:
   * /rfy+: En este caso se obtiene el dado alto.
   * /ryf-: En este caso el dado menor.
 * /ryf6: En este caso es para la variante de Rápido y Fácil con dados de 6 caras. Admite también los símbolos + y -
