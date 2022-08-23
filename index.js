@@ -1,5 +1,6 @@
 // Importamos la librería node-telegram-bot-api 
 const TelegramBot = require('node-telegram-bot-api');
+process.env.PORT = 5000;
 
 // Creamos una constante que guarda el Token de nuestro Bot de Telegram que previamente hemos creado desde el bot @BotFather. Por seguridad la meteremos en una variable de entorno
 const token = process.env.DICEBOT_TOKEN;
