@@ -1,6 +1,6 @@
 # @RolePlayDiceBot
 
-Bot para Telegram que permite realizar tiradas de dados de diversos sistemas.
+Bot para Telegram que permite realizar tiradas de dados de diversos sistemas de rol, incluyendo los dados especiales para [Rápido y Fácil](http://www.rapidoyfacil.es/).
 
 > Nota: Este bot aun esta en desarrollo por lo que muchas funcionalidades podrían no estar todavía disponibles en la versión estable y/o el bot oficial (no disponible de momento).
 
@@ -12,11 +12,13 @@ Node.js y su gestor de paquetes npm
 
 Primero necesitas crear un nuevo bot para obtener el token. [Esta guía](https://tecnonucleous.com/2020/02/13/como-generar-el-token-de-nuestro-bot-con-botfather/) te indica los pasos a seguir.
 
-Abrir index.js y editar la siguiente linea con el token proporcionado:
+Una vez obtenido el token deberás de guardarlo en una variable de entorno, **DICEBOT_TOKEN**, o cambia la linea que guarda la constante con el token poniendo directamente el token:
 
 ```js
 const token = 'tu-token';
 ```
+
+> Si el código del bot va a ser visible, te recomiendo por seguridad que no edites dicha linea
 
 ### Comandos disponibles
 
