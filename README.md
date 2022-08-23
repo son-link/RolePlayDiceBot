@@ -2,6 +2,8 @@
 
 Bot para Telegram que permite realizar tiradas de dados de diversos sistemas de rol, incluyendo los dados especiales para [Rápido y Fácil](http://www.rapidoyfacil.es/).
 
+![Captura del bot en acción](screenshoot.jpg)
+
 > Nota: Este bot aun esta en desarrollo por lo que muchas funcionalidades podrían no estar todavía disponibles en la versión estable y/o el bot oficial (no disponible de momento).
 
 ### Requisitos:
