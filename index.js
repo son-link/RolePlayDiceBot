@@ -7,7 +7,7 @@ const token = process.env.DICEBOT_TOKEN;
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, {polling: true});
 
-const dice_standard = /\/([\d]+)d([\d]+)/;
+const dice_standard = /\/([\d]+)d([\d]+)(\+[\d]+)?/;
 const dice_ryf = /\/ryf(6?)(\+|\-?)/;
 
 /**
@@ -26,11 +26,27 @@ bot.onText(dice_standard, (msg) => {
   const dices = msg.text.match(dice_standard);
   const tiradas = parseInt(dices[1]);
   const caras = parseInt(dices[2]);
+  const opciones = msg.text.match(dice_standard);
   let result = `${msg.from.first_name}: `;
+  let sumTiradas = 0;
+  let dados = '';
 
-  for (i=0; i < tiradas; i++) {
-    result += tirarDado(caras) + ' ';
+  if (typeof opciones[3] === 'undefined') {
+    for (i=0; i < tiradas; i++) {
+      result += tirarDado(caras) + ' ';
+    }
+  } else {
+    for (i=0; i < tiradas; i++) {
+      let tirada = tirarDado(caras);
+      sumTiradas += tirada;
+      dados += tirada + ' ';
+    }
+
+    let aSumar = opciones[3].replace('+', '');
+    sumTiradas += parseInt(aSumar);
+    result = `${msg.from.first_name}: ha tirado ${tiradas} dado(s) de ${caras} caras (${dados}) y se le ha sumado ${aSumar} al resultado = ${sumTiradas}`;
   }
+
   bot.sendMessage(msg.chat.id, result);
 });
 
@@ -101,4 +117,26 @@ bot.onText(/\/fate/, (msg) => {
  */
 bot.on('polling_error', (error) => {
   console.dir(error);  // => 'EFATAL'
+});
+
+/**
+ * Muestra la ayuda
+ */
+ bot.onText(/\/help/, (msg) => {
+  const ayuda = `
+  *RolePlayDiceBot*
+    
+  Un bot de Telegram para hacer tiradas de dados para diversos sistemas de rol
+
+  *Comandos disponibles*
+    
+    \\- Tirada clásica: /XdY \\(por ejemplo: /1d20, /2d6, /2d10, etc\\)
+    \\- /ryf: Tirada para el sistema Rápido y Fácil \\(tira 3 dados de 10 caras y coge el dado medio\\)\\. Este comando tiene variaciones:
+      \\- /rfy\\+: En este caso se obtiene el dado alto
+      \\- /ryf\\-: En este caso el dado menor
+      \\- /ryf6: En este caso es para la variante de Rápido y Fácil con dados de 6 caras\\. Admite también los símbolos \\+ y \\-
+    \\- /d100: Lanza un dado de 100 caras o porcentual
+    \\- /fate: Lanza una tirada para el sistema FATE \\(4 dados con 2 caras en blanco, 2 con el símbolo \\- y 2 con el símbolo \\+\\)
+  `
+  bot.sendMessage(msg.chat.id, ayuda, {parse_mode : 'MarkdownV2'});
 });

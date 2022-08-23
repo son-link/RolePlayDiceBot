@@ -1,6 +1,6 @@
 {
   "name": "RolePlayDiceBot",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Un bot de Telegram para hacer tiradas de dados para diversos sistemas de rol.",
   "main": "index.js",
   "scripts": {
