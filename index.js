@@ -1,6 +1,19 @@
 // Importamos la librería node-telegram-bot-api 
 const TelegramBot = require('node-telegram-bot-api');
-process.env.PORT = 5000;
+const { I18n } = require('i18n');
+const path = require('path');
+const fse = require('fs-extra');
+
+const i18n = new I18n({
+  locales: ['en', 'es'],
+  directory: path.join(__dirname, 'locales'),
+  defaultLocale: 'en',
+});
+
+//const __ = i18n.__;
+const confFile = './config/default.json'
+
+var config = require('./config/default.json');
 
 // Creamos una constante que guarda el Token de nuestro Bot de Telegram que previamente hemos creado desde el bot @BotFather. Por seguridad la meteremos en una variable de entorno
 const token = process.env.DICEBOT_TOKEN;
@@ -45,9 +58,8 @@ bot.onText(dice_standard, (msg) => {
 
     let aSumar = opciones[3].replace('+', '');
     sumTiradas += parseInt(aSumar);
-    result = `${msg.from.first_name}: ha tirado ${tiradas} dado(s) de ${caras} caras (${dados}) y se le ha sumado ${aSumar} al resultado = ${sumTiradas}`;
+    result = __(`${msg.from.first_name}: ha tirado ${tiradas} dado(s) de ${caras} caras (${dados}) y se le ha sumado ${aSumar} al resultado = ${sumTiradas}`);
   }
-
   bot.sendMessage(msg.chat.id, result);
 });
 
@@ -84,10 +96,15 @@ bot.onText(dice_ryf, (msg) => {
  * Lanza 1 dado de 100 caras, también llamada porcentual
  */
 bot.onText(/\/d100/, (msg) => {
-  resultado = tirarDado(100);
-  bot.sendMessage(msg.chat.id, `${msg.from.first_name} lanzo 1d100: ${resultado}`);
-});
+  let lang = getChatLang(msg.chat.id);
+  const resultado = tirarDado(100);
+  const text = __(msg.chat.id, '{{ name }} roll 1d100: {{ result }}', {
+    name: msg.from.first_name,
+    result: resultado,
+  });
 
+  bot.sendMessage(msg.chat.id, text);
+});
 
 /**
  * Lanza una tirada para el sistema FATE (4 dados de 6 caras, pero con símbolos +, - o nada)
@@ -141,3 +158,97 @@ bot.on('polling_error', (error) => {
   `
   bot.sendMessage(msg.chat.id, ayuda, {parse_mode : 'MarkdownV2'});
 });
+
+bot.onText(/\/config/, (msg) => {
+  console.log(msg);
+  const opts = {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: __(msg.chat.id, 'Set language'),
+            callback_data: 'set_lang'
+          }
+        ]
+      ]
+    }
+  };
+  bot.sendMessage(msg.chat.id, __(msg.chat.id, 'Configure bot'), opts);
+});
+
+
+// Handle callback queries
+bot.on('callback_query', (callbackQuery) => {
+  const action = callbackQuery.data;
+  const msg = callbackQuery.message;
+  const chat_id = msg.chat.id
+  const opts = {
+    chat_id: chat_id,
+    message_id: msg.message_id,
+  };
+  let text;
+  
+  console.log(action);
+  if (action === 'edit') {
+    text = 'Edited Text';
+  } else if (action == 'set_lang') {
+    text = __(chat_id, 'Configure language');
+    setLang(chat_id);
+  } else if (action.startsWith('lang_')) {
+    let lang = action.replace('lang_', '');
+    if (chat_id in config) config[chat_id].lang = lang;
+    else config[chat_id] = { lang: lang };
+    saveConf();
+    text = __(chat_id, 'Language saved');
+  }
+
+  bot.editMessageText(text, opts);
+});
+
+function setLang(chat) {
+  const opts = {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: 'English',
+            callback_data: 'lang_en'
+          },
+          {
+            text: 'Español',
+            callback_data: 'lang_es'
+          }
+        ]
+      ]
+    }
+  };
+  bot.sendMessage(chat, __(chat, 'Set language'), opts);
+}
+
+function getChatLang(chat_id)
+{
+  if (chat_id in config) return config[chat_id].lang;
+  else {
+    config[chat_id] = {}
+    config[chat_id].lang = 'en';
+    saveConf();
+    return 'en';
+  }
+}
+
+function saveConf() {
+  fse.writeJson(confFile, config, (error) => {
+    if (error) {
+      console.log('An error has occurred on save config');
+      return;
+    }
+  });
+}
+
+function __(chat_id, text, replace={}) {
+  const locale = getChatLang(chat_id)
+  return i18n.__({
+    phrase: text,
+    locale: locale,
+  }, replace);
+}

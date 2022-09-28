@@ -1,0 +1,7 @@
+{
+	"{{ name }} roll 1d100: {{ result }}": "{{ name }} lanzo 1d100: {{ result }}",
+	"Language saved": "Idioma guardado",
+	"Configure language": "Configurar idioma",
+	"Set language": "Definir idioma",
+	"Configure bot": "Configurar bot"
+}

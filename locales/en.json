@@ -1,0 +1,7 @@
+{
+	"{{ name }} roll 1d100: {{ result }}": "{{ name }} roll 1d100: {{ result }}",
+	"Language saved": "Language saved",
+	"Set language": "Set language",
+	"Configure language": "Configure language",
+	"Configure bot": "Configure bot"
+}

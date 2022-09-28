@@ -10,6 +10,9 @@
   "author": "Alfonso Saavedra \"Son Link\"",
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "cakebase": "^4.0.2",
+    "fs-extra": "^10.1.0",
+    "i18n": "^0.15.0",
     "node-telegram-bot-api": "^0.50.0"
   }
 }
