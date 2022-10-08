@@ -1,0 +1,8 @@
+{
+  "name": "RolePlayDiceBot",
+  "description": "Roleplay Dice bot",
+  "repository": "https://github.com/son-link/RolePlayDiceBot",
+  "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/master/public/node.svg",
+  "keywords": ["node", "telegram", "heroku"],
+  "image": "heroku/nodejs"
+}
